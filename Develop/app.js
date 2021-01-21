@@ -10,39 +10,83 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
-inquirer.prompt([
+const managerInfo = [
     {
         type: "input",
         message: "What's the manager's name of your team?",
-        name: "Manager Name"
+        name: "name"
     },
     {
         type: "input",
         message: "Your manager's identificaiton number?",
-        name: "Manager id"
+        name: "id"
     },
     {
         type: "input",
         message: "Your manager's email?",
-        name: "Manager email"
+        name: "email"
     },
     {
         type: "input",
         message: "Your manager's office number?",
-        name: "Manager officeNumber"
+        name: "officeNumber"
     },
     {
         type: "confirm",
         message: "Any engineers?",
         name: "hasEngineers"
-    }
-]).then((data) => {
-    if (data.hasEngineers) {
-        console.log(data);
-    }
-})
+    },
+    // {
+    //     type: "confirm",
+    //     message: "Any interns?",
+    //     name: "hasInterns"
+    // }
+];
+
+
+
+// Write code to use inquirer to gather information about the development team members,
+// and to create objects for each team member (using the correct classes as blueprints!)
+
+// ORIGINAL IDEA: SCRAPPED!!!!
+// inquirer.prompt(managerInfo).then((data) => {
+//     const manager = new Manager(data.name, data.id, data.email, data.officeNumber);
+//     team.push(manager);
+//     if (data.hasEngineers && data.hasInterns) {
+//         inquirer.prompt(engineerInfo).then((data) => {
+
+//         })
+//     }
+// })
+
+const collectInputs = async (inputs = []) => {
+    const prompts = [
+        {
+            type: "input",
+            message: "Your manager's office number?",
+            name: "officeNumber"
+        },
+        {
+            type: "confirm",
+            message: "Any engineers?",
+            name: "hasEngineers",
+            default: true
+        },
+    ];
+
+    const { hasEngineers, ...answers } = await inquirer.prompt(prompts);
+    const newInputs = [...inputs, answers];
+    return hasEngineers ? collectInputs(newInputs) : newInputs;
+};
+
+const main = async () => {
+    const inputs = await collectInputs();
+    console.log(inputs);
+};
+
+main();
+
+
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
