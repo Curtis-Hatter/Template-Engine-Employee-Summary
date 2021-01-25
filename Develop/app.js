@@ -9,7 +9,7 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
-const Choices = require("inquirer/lib/objects/choices");
+// const Choices = require("inquirer/lib/objects/choices");
 
 let team = [];
 let internCount = [];
@@ -192,8 +192,13 @@ const collectInternInputs = async () => {
 const main = async () => {
     const inputs = await collectEmployees();
     // const inputs = await collectManagerInputs();
-    console.log(inputs);
+    // console.log(inputs);
     // console.log(team);
+    // render(inputs)
+    fs.writeFile(outputPath, render(inputs), "utf-8", function (err) {
+        if (err) console.log("You screwed up", err);
+    })
+    console.log("Something Happend Right for once");
 };
 
 main();
