@@ -11,6 +11,7 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 // const Choices = require("inquirer/lib/objects/choices");
 
+// Variables Created
 let team = [];
 let internCount = [];
 let engineerCount = [];
@@ -50,21 +51,6 @@ const managerInfo = [
         name: "hasMoreManagers"
     },
 ];
-// const prompts = [
-//     {
-//         type: "input",
-//         message: "Your engineer's github?",
-//         name: "officeNumber"
-//     },
-//     {
-//         type: "confirm",
-//         message: "Any more?",
-//         name: "hasMoreEngineers",
-//         default: true
-//     },
-// ];
-
-
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
@@ -80,11 +66,10 @@ const managerInfo = [
 //     }
 // })
 
+// Ask User what employee they would like to add to the team
 const collectEmployees = async () => {
     const { employee, ...answers } = await inquirer.prompt(employ);
-    // const newInputs = [...inputs];
-    // console.log(employee);
-    // return newInputs;
+
     if (employee === "Manager") {
         return collectManagerInputs();
     }
@@ -95,6 +80,7 @@ const collectEmployees = async () => {
         return collectInternInputs();
     }
     else {
+        // Create Team from manage to intern
         managerCount.forEach(manager => {
             team.push(manager);
         });
@@ -104,31 +90,27 @@ const collectEmployees = async () => {
         internCount.forEach(intern => {
             team.push(intern);
         })
-        // team.push(managerCount, engineerCount, internCount);
         return team;
     }
 };
 
 const collectManagerInputs = async () => {
+    managerInfo.pop();
+    managerInfo.pop();
+    managerInfo.push(
+        {
+            type: "input",
+            message: "Office Number: ",
+            name: "officeNumber"
+        },
+        {
+            type: "confirm",
+            message: "Any more Managers?",
+            name: "hasMoreManagers"
+        });
     const { hasMoreManagers, ...answers } = await inquirer.prompt(managerInfo);
     const newManager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber);
     managerCount.push(newManager);
-    // return collectEmployees(team);
-    // const newInputs = [...inputs, answers];
-    // managerCount++;
-    // if (hasMoreManagers) {
-    //     return collectManagerInputs(newInputs);
-    // }
-    // else if (hasEngineer) {
-    //     return collectEngineerInputs(newInputs);
-    // }
-    // else if (hasIntern) {
-    //     return collectInternInputs(newInputs);
-    // }
-    // else {
-    //     return newInputs;
-    // }
-    // return newInputs;
     return hasMoreManagers ? collectManagerInputs() : collectEmployees();
 };
 
@@ -148,20 +130,9 @@ const collectEngineerInputs = async () => {
             default: true
         });
     const prompts = managerInfo;
-    // engineerCount++;
     const { hasMoreEngineers, ...answers } = await inquirer.prompt(prompts);
     const newEngineer = new Engineer(answers.name, answers.id, answers.email, answers.github);
     engineerCount.push(newEngineer);
-    // const newInputs = [...inputs, answers];
-    // if (hasMoreEngineers) {
-    //     return collectEngineerInputs(newInputs);
-    // }
-    // else if (hasIntern) {
-    //     return collectInternInputs(newInputs);
-    // }
-    // else {
-    //     return newInputs;
-    // }
     return hasMoreEngineers ? collectEngineerInputs() : collectEmployees();
 };
 
